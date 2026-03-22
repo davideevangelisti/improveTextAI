@@ -1,6 +1,6 @@
-# Right Click to Improve
+# improveTextAI
 
-Improve selected text with a local LLM directly from the right-click menu (or a keyboard shortcut) in any macOS app.
+Improve selected text with a local LLM via a keyboard shortcut in any macOS app.
 
 - Runs fully **locally** via [Ollama](https://ollama.com) — no data leaves your Mac
 - Works in any native macOS app via the **Services menu**
@@ -30,13 +30,16 @@ ollama pull llama3.1:8b
 
 ## Raycast (global shortcut)
 
-Copy `raycast/improve-text.sh` to your Raycast Scripts directory and add that folder in Raycast → Settings → Extensions → Script Commands.
+Add `RaycastScript.sh` as a Script Command in Raycast → Settings → Extensions → Script Commands.
 
-The default shortcut is `⌘⇧I`.
+The shortcut is `Ctrl+\`.
+
+> **Note:** Raycast needs Accessibility permission to simulate keystrokes.
+> Go to Systemeinstellungen → Datenschutz & Sicherheit → Bedienungshilfen and add Raycast.
 
 ## How it works
 
 1. Select any text
-2. Right-click → Services → **Improve Text with AI** (or press `⌘⇧I` with Raycast)
+2. Press `Ctrl+\` (or right-click → Services → **Improve Text with AI** in native apps)
 3. A sound plays while the model works
 4. The selected text is replaced with the improved version
