@@ -10,7 +10,7 @@
 # @raycast.icon ✍️
 # @raycast.shortcut cmd+shift+i
 
-SCRIPT_DIR="/Users/davide/Library/Mobile Documents/com~apple~CloudDocs/Projects/improve-text-ai"
+SCRIPT_DIR="/Users/davide/Library/Mobile Documents/com~apple~CloudDocs/Projects/improveTextAI"
 
 # Start Ollama if not already running
 if ! curl -s http://localhost:11434 > /dev/null 2>&1; then
