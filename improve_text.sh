@@ -1,5 +1,5 @@
 #!/bin/bash
-# improve_text.sh — calls local Ollama to improve selected text.
+# improve_text.sh — calls Claude API to improve selected text.
 
 set -euo pipefail
 
@@ -12,7 +12,15 @@ if [ ! -s "$TMPFILE" ]; then
     exit 0
 fi
 
-SYSTEM="You are a writing assistant. When given text, you rewrite it to improve clarity, grammar, and style while preserving the original meaning and formatting. You output ONLY the rewritten text — no explanations, no preamble, no markdown headers, no quotes. Never truncate or omit any part of the text."
+# Load API key
+if [ -z "${ANTHROPIC_API_KEY:-}" ] && [ -f "$HOME/.config/anthropic/api_key" ]; then
+    export ANTHROPIC_API_KEY=$(cat "$HOME/.config/anthropic/api_key" | tr -d '[:space:]')
+fi
+
+if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+    echo "ANTHROPIC_API_KEY not set" >&2
+    exit 1
+fi
 
 PAYLOAD=$(python3 - "$TMPFILE" <<'EOF'
 import json, sys
@@ -23,13 +31,10 @@ with open(sys.argv[1], 'r') as f:
     user = f.read()
 
 payload = {
-    "model": "llama3.1:8b",
-    "stream": False,
-    "options": {
-        "num_predict": 8192
-    },
+    "model": "claude-sonnet-4-6",
+    "max_tokens": 8192,
+    "system": system,
     "messages": [
-        {"role": "system", "content": system},
         {"role": "user", "content": user}
     ]
 }
@@ -37,12 +42,18 @@ print(json.dumps(payload))
 EOF
 )
 
-RESPONSE=$(curl -s http://localhost:11434/api/chat \
+RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2023-06-01" \
     -H "content-type: application/json" \
     -d "$PAYLOAD")
 
 python3 -c "
 import json, sys
 data = json.loads(sys.stdin.read())
-print(data['message']['content'], end='')
+if 'content' in data:
+    print(data['content'][0]['text'], end='')
+else:
+    print(json.dumps(data), file=sys.stderr)
+    sys.exit(1)
 " <<< "$RESPONSE"
