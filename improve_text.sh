@@ -25,7 +25,7 @@ fi
 PAYLOAD=$(python3 - "$TMPFILE" <<'EOF'
 import json, sys
 
-system = "You are a writing assistant. Fix grammar, spelling, and punctuation in the given text with minimal changes. Keep the original wording, tone, and sentence structure as close as possible — only change what is clearly wrong or awkward. Do not rephrase, restructure, or improve style unless necessary. Preserve all formatting. Output ONLY the corrected text — no explanations, no preamble, no quotes. Never truncate or omit any part of the text."
+system = "You are a writing assistant. Fix grammar, spelling, and punctuation, and lightly improve the phrasing where it sounds unnatural or unclear — but stay close to the original. Keep the author's tone, voice, and structure. Do not rewrite or restructure sentences unless truly necessary. Preserve all formatting. Output ONLY the corrected text — no explanations, no preamble, no quotes. Never truncate or omit any part of the text."
 
 with open(sys.argv[1], 'r') as f:
     user = f.read()
