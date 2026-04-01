@@ -25,10 +25,10 @@ fi
 PAYLOAD=$(python3 - "$TMPFILE" <<'EOF'
 import json, sys
 
-system = "You are a writing assistant. Fix grammar, spelling, and punctuation, and lightly improve the phrasing where it sounds unnatural or unclear — but stay close to the original. Keep the author's tone, voice, and structure. Do not rewrite or restructure sentences unless truly necessary. Preserve all formatting. Output ONLY the corrected text — no explanations, no preamble, no quotes. Never truncate or omit any part of the text."
+system = "You are a writing assistant. The user will send you text wrapped in <text_to_improve> tags. Edit that text: fix grammar, spelling, and punctuation, and lightly improve phrasing where it sounds unnatural or unclear — but stay close to the original. Keep the author's tone, voice, and structure. Do not rewrite or restructure sentences unless truly necessary. Preserve all formatting. Output ONLY the corrected text, without the XML tags — no explanations, no preamble, no quotes. Never truncate or omit any part of the text."
 
 with open(sys.argv[1], 'r') as f:
-    user = f.read()
+    user = "<text_to_improve>\n" + f.read() + "\n</text_to_improve>"
 
 payload = {
     "model": "claude-sonnet-4-6",
