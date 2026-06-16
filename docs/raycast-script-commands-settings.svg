@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">Raycast Script Commands settings reference</title>
+  <desc id="desc">A reference image showing Raycast Settings, Extensions, Scripts, Script Commands, and the Add Directories area where the improveTextAI folder should be listed.</desc>
+  <rect width="1280" height="760" rx="18" fill="#1f1f1f"/>
+  <rect x="1" y="1" width="1278" height="758" rx="18" fill="none" stroke="#303030"/>
+
+  <circle cx="22" cy="22" r="9" fill="#ff5f57"/>
+  <circle cx="52" cy="22" r="9" fill="#3f3f3f"/>
+  <circle cx="82" cy="22" r="9" fill="#3f3f3f"/>
+
+  <text x="640" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#a8a8a8">Raycast Settings</text>
+
+  <g font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#b9b9b9">
+    <text x="220" y="74" text-anchor="middle">General</text>
+    <rect x="286" y="42" width="104" height="58" rx="13" fill="#111" stroke="#333"/>
+    <text x="338" y="74" text-anchor="middle" fill="#fff">Extensions</text>
+    <text x="455" y="74" text-anchor="middle">AI</text>
+    <text x="565" y="74" text-anchor="middle">Cloud Sync</text>
+    <text x="688" y="74" text-anchor="middle">Account</text>
+    <text x="810" y="74" text-anchor="middle">Organizations</text>
+    <text x="944" y="74" text-anchor="middle">Advanced</text>
+    <text x="1058" y="74" text-anchor="middle">About</text>
+  </g>
+
+  <line x1="0" y1="118" x2="1280" y2="118" stroke="#343434"/>
+  <line x1="875" y1="118" x2="875" y2="760" stroke="#343434"/>
+
+  <rect x="20" y="130" width="260" height="34" rx="12" fill="#232323" stroke="#4a4a4a"/>
+  <text x="32" y="153" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#888">Search...</text>
+
+  <g font-family="Arial, sans-serif" font-size="16" font-weight="700">
+    <text x="315" y="153" fill="#b5b5b5">All</text>
+    <text x="385" y="153" fill="#b5b5b5">Commands</text>
+    <rect x="485" y="130" width="78" height="34" rx="17" fill="#484848"/>
+    <text x="524" y="153" text-anchor="middle" fill="#fff">Scripts</text>
+    <text x="600" y="153" fill="#b5b5b5">Apps</text>
+    <text x="675" y="153" fill="#b5b5b5">Quicklinks</text>
+  </g>
+
+  <line x1="0" y1="176" x2="875" y2="176" stroke="#3d3d3d"/>
+  <g font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#999">
+    <text x="26" y="207">Name</text>
+    <text x="376" y="207">Type</text>
+    <text x="515" y="207">Alias</text>
+    <text x="642" y="207">Hotkey</text>
+    <text x="795" y="207">Enabled</text>
+  </g>
+  <rect x="10" y="225" width="855" height="48" rx="12" fill="#2f70b7"/>
+  <rect x="50" y="238" width="20" height="20" rx="5" fill="#ff4f58"/>
+  <polygon points="58,243 58,253 66,248" fill="#fff"/>
+  <text x="82" y="256" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#fff">Script Commands</text>
+  <text x="376" y="256" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#a8c6ea">Group</text>
+  <text x="515" y="256" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#a8c6ea">--</text>
+  <text x="642" y="256" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#a8c6ea">--</text>
+  <rect x="818" y="239" width="17" height="17" rx="5" fill="none" stroke="#82b0df" stroke-width="2"/>
+  <path d="M823 247l3 4 6-8" fill="none" stroke="#82b0df" stroke-width="2"/>
+
+  <g font-family="Arial, sans-serif">
+    <rect x="895" y="148" width="38" height="38" rx="10" fill="#ff4f58"/>
+    <polygon points="910,158 910,176 925,167" fill="#fff"/>
+    <text x="947" y="174" font-size="20" font-weight="700" fill="#fff">Script Commands</text>
+    <line x1="875" y1="218" x2="1280" y2="218" stroke="#343434"/>
+
+    <text x="895" y="266" font-size="17" font-weight="700" fill="#a8a8a8">Script Directories</text>
+    <text x="895" y="305" font-size="17" font-weight="700" fill="#a8a8a8">Directories added here will be watched for changes</text>
+    <text x="895" y="327" font-size="17" font-weight="700" fill="#a8a8a8">and reflected in Raycast immediately</text>
+
+    <rect x="895" y="350" width="362" height="48" rx="12" fill="#3b3b3b"/>
+    <text x="1076" y="380" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">Add Directories</text>
+
+    <rect x="902" y="432" width="24" height="19" rx="3" fill="#54b7e9"/>
+    <rect x="906" y="428" width="14" height="7" rx="2" fill="#74cdf6"/>
+    <text x="935" y="441" font-size="18" font-weight="700" fill="#fff">Documents</text>
+    <text x="935" y="464" font-size="17" font-weight="700" fill="#9c9c9c">~/Documents</text>
+
+    <rect x="905" y="492" width="19" height="24" rx="2" fill="#f0f0f0"/>
+    <path d="M919 492l5 6h-5z" fill="#cfcfcf"/>
+    <text x="935" y="502" font-size="18" font-weight="700" fill="#fff">improveTextAI</text>
+    <text x="935" y="525" font-size="16" font-weight="700" fill="#9c9c9c">~/Library/Mobile Documents/.../Projects/tools/improveTextAI</text>
+
+    <rect x="1133" y="481" width="108" height="48" rx="10" fill="none" stroke="#5aa7ff" stroke-width="3" stroke-dasharray="8 6"/>
+    <text x="1187" y="511" text-anchor="middle" font-size="15" font-weight="700" fill="#9ecbff">target folder</text>
+  </g>
+</svg>

@@ -3,8 +3,24 @@
 
 set -euo pipefail
 
+LOG_FILE="$HOME/Library/Logs/improveTextAI.log"
+if ! { mkdir -p "$(dirname "$LOG_FILE")" && : >> "$LOG_FILE"; } 2>/dev/null; then
+    LOG_FILE="${TMPDIR:-/tmp}/improveTextAI.log"
+    : >> "$LOG_FILE" 2>/dev/null || true
+fi
+
+log() {
+    { printf '%s improve_text: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; } 2>/dev/null >> "$LOG_FILE" || true
+}
+
 TMPFILE=$(mktemp)
-trap "rm -f $TMPFILE" EXIT
+RESPONSE_FILE=$(mktemp)
+ERROR_FILE=$(mktemp)
+
+cleanup() {
+    rm -f "$TMPFILE" "$RESPONSE_FILE" "$ERROR_FILE"
+}
+trap cleanup EXIT
 
 cat > "$TMPFILE"
 
@@ -19,6 +35,7 @@ fi
 
 if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
     echo "ANTHROPIC_API_KEY not set" >&2
+    log "ANTHROPIC_API_KEY not set"
     exit 1
 fi
 
@@ -42,18 +59,59 @@ print(json.dumps(payload))
 EOF
 )
 
-RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+HTTP_STATUS=$(curl -sS --connect-timeout 10 --max-time 120 \
+    -o "$RESPONSE_FILE" \
+    -w "%{http_code}" \
+    https://api.anthropic.com/v1/messages \
     -H "x-api-key: $ANTHROPIC_API_KEY" \
     -H "anthropic-version: 2023-06-01" \
     -H "content-type: application/json" \
-    -d "$PAYLOAD")
+    -d "$PAYLOAD" 2> "$ERROR_FILE") || {
+        ERROR_MESSAGE=$(tr '\n' ' ' < "$ERROR_FILE" | sed 's/[[:space:]]*$//')
+        [ -n "$ERROR_MESSAGE" ] || ERROR_MESSAGE="network request failed"
+        echo "Anthropic request failed: $ERROR_MESSAGE" >&2
+        log "Anthropic request failed: $ERROR_MESSAGE"
+        exit 1
+    }
 
-python3 -c "
+case "$HTTP_STATUS" in
+    ''|*[!0-9]*) HTTP_STATUS=000 ;;
+esac
+
+if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+    ERROR_MESSAGE=$(python3 - "$RESPONSE_FILE" <<'EOF'
 import json, sys
-data = json.loads(sys.stdin.read())
-if 'content' in data:
-    print(data['content'][0]['text'], end='')
+
+try:
+    with open(sys.argv[1], "r") as f:
+        data = json.load(f)
+except Exception:
+    print("unexpected API error")
+    sys.exit(0)
+
+error = data.get("error", {})
+print(error.get("message") or data.get("message") or json.dumps(data))
+EOF
+)
+    echo "Anthropic request failed (HTTP $HTTP_STATUS): $ERROR_MESSAGE" >&2
+    log "Anthropic request failed (HTTP $HTTP_STATUS): $ERROR_MESSAGE"
+    exit 1
+fi
+
+python3 - "$RESPONSE_FILE" <<'EOF'
+import json, sys
+
+with open(sys.argv[1], "r") as f:
+    data = json.load(f)
+
+parts = []
+for item in data.get("content", []):
+    if item.get("type") == "text":
+        parts.append(item.get("text", ""))
+
+if parts:
+    print("".join(parts), end="")
 else:
-    print(json.dumps(data), file=sys.stderr)
+    print("Anthropic response did not include text content", file=sys.stderr)
     sys.exit(1)
-" <<< "$RESPONSE"
+EOF

@@ -3,12 +3,29 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+resolve_script_dir() {
+    local source dir
+    source="${BASH_SOURCE[0]}"
+    while [ -h "$source" ]; do
+        dir="$(cd -P "$(dirname "$source")" && pwd)"
+        source="$(readlink "$source")"
+        [[ "$source" != /* ]] && source="$dir/$source"
+    done
+    cd -P "$(dirname "$source")" && pwd
+}
+
+SCRIPT_DIR="$(resolve_script_dir)"
+SERVICE_RUNNER="$SCRIPT_DIR/service_runner.sh"
 SERVICE_NAME="Improve Text with AI"
 SERVICE_DIR="$HOME/Library/Services/${SERVICE_NAME}.workflow"
 CONTENTS_DIR="$SERVICE_DIR/Contents"
 
 echo "Installing '${SERVICE_NAME}' macOS Service..."
+
+if [ ! -f "$SERVICE_RUNNER" ] || [ ! -f "$SCRIPT_DIR/improve_text.sh" ]; then
+    echo "Missing helper scripts in: $SCRIPT_DIR" >&2
+    exit 1
+fi
 
 # Create workflow bundle structure
 mkdir -p "$CONTENTS_DIR"
@@ -113,7 +130,7 @@ cat > "$CONTENTS_DIR/document.wflow" << WFLOW
                 <key>ActionParameters</key>
                 <dict>
                     <key>COMMAND_STRING</key>
-                    <string>bash "$SCRIPT_DIR/service_runner.sh"</string>
+                    <string>bash "$SERVICE_RUNNER"</string>
                     <key>CheckedForUserDefaultShell</key>
                     <true/>
                     <key>inputMethod</key>
@@ -241,6 +258,7 @@ cat > "$CONTENTS_DIR/document.wflow" << WFLOW
 WFLOW
 
 echo "Service installed at: $SERVICE_DIR"
+echo "Project path: $SCRIPT_DIR"
 echo ""
 echo "Refreshing Services menu..."
 /System/Library/CoreServices/pbs -update 2>/dev/null || true
@@ -251,6 +269,8 @@ echo "Done! To use:"
 echo "  1. Select any text in any app"
 echo "  2. Right-click → Services → 'Improve Text with AI'"
 echo "     (or go to app menu → Services → 'Improve Text with AI')"
+echo "  3. For Raycast, add this folder as a Script Commands directory:"
+echo "     $SCRIPT_DIR"
 echo ""
-echo "Note: Make sure ANTHROPIC_API_KEY is set in your ~/.zshrc"
-echo "  If not set, run: echo 'export ANTHROPIC_API_KEY=sk-...' >> ~/.zshrc"
+echo "Note: Make sure ANTHROPIC_API_KEY is set, or save it in:"
+echo "  ~/.config/anthropic/api_key"
